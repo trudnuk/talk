@@ -1,0 +1,101 @@
+from customtkinter import *
+import subprocess
+import sys
+import os
+
+class LoginApp(CTk):
+    def __init__(self):
+        super().__init__()
+
+        self.title("LogiTalk")
+        self.geometry("750x450")
+        
+
+        self.left_panel = CTkFrame(self, fg_color=("#6C3483", "#4A235A"), corner_radius=0)
+        self.left_panel.pack(side="left", fill="both",expand=True)
+
+        self.welcome_label = CTkLabel(self.left_panel, text="Welcome", font=("Arial", 42, "bold"), text_color="white")
+        self.welcome_label.place(relx=0.5, rely=0.5, anchor="center")
+
+        
+        self.right_panel = CTkFrame(self, fg_color=("#F2F2F2", "#222222"), corner_radius=0)
+        self.right_panel.pack(side="right", fill="both", expand=True)
+
+       
+        self.logo = CTkLabel(self.right_panel, text="LogiTalk", font=("Arial", 26, "bold"), text_color="#6C3483")
+        self.logo.pack(pady=(60, 20))
+
+    
+        self.name_entry = CTkEntry(self.right_panel, placeholder_text="ім'я",  width=240, height=45, corner_radius=20, fg_color=("#F2F2F2", "#C7C7C7"), border_width=0)
+        self.name_entry.pack(pady=10)
+
+        
+        self.settings_btn = CTkButton(self.right_panel, text="⚙️ Налаштування", width=240, height=45, corner_radius=20, fg_color=("#F2F2F2", "#CECECE"), text_color="black", hover_color="#E5E5E5" , command=self.open_settings)
+        self.settings_btn.pack(pady=10)
+
+        self.login_btn = CTkButton(self.right_panel, text="УВІЙТИ", width=180, height=45, corner_radius=20, fg_color=("#C0392B", "#96332A"), hover_color="#A93226", command=self.do_login)
+        self.login_btn.pack(pady=(40, 0))
+    
+    def do_login(self):
+        username = self.name_entry.get().strip()
+        if not username:
+            print("Введіть ім'я")
+            return
+        self.env= {"name":username}
+        self.destroy()
+        subprocess.Popen([sys.executable, "client.py"], cwd="E:\логіка\logikatalk", env={**os.environ, "USERNAME": username})
+    def open_settings(self):
+        settings_window = CTkToplevel(self)
+        settings_window.title("Налаштування")
+        settings_window.geometry("350x300")
+        settings_window.grab_set() 
+        
+        label = CTkLabel(settings_window, text="Налаштування LogiTalk", font=("Arial", 16, "bold"))
+        label.pack(pady=15)
+
+        theme_label = CTkLabel(settings_window, text="Тема оформлення:")
+        theme_label.pack(pady=5)
+        
+        def change_theme(choice):
+            if choice == "Темна":
+                set_appearance_mode("dark")
+            elif choice == "Світла":
+                set_appearance_mode("light")
+            else:
+                set_appearance_mode("system")
+
+        theme_menu = CTkOptionMenu(settings_window, values=["Системна", "Темна", "Світла"], command=change_theme)
+        theme_menu.pack(pady=5)
+
+
+        server_label = CTkLabel(settings_window, text="Адреса сервера (IP):")
+        server_label.pack(pady=5)
+        
+        server_entry = CTkEntry(settings_window, placeholder_text="127.0.0.1", width=200)
+        server_entry.pack(pady=5)
+
+  
+        def save_settings():
+            
+            print(f"Збережено сервер: {server_entry.get()}")
+            settings_window.destroy()
+
+        save_btn = CTkButton(settings_window, text="Зберегти", fg_color="#6C3483", command=save_settings)
+        save_btn.pack(pady=20)
+
+LoginApp().mainloop()
+
+
+
+
+
+
+
+
+
+
+"""def get_data():
+    win =LoginApp()
+    win.mainloop()
+    return win.env
+if __name__=="__main__":"""
