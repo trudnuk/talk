@@ -2,7 +2,7 @@ from customtkinter import *
 import subprocess
 import sys
 import os
-
+q
 class LoginApp(CTk):
     def __init__(self):
         super().__init__()
